@@ -8,6 +8,7 @@ import requests
 import RW_ACCOUNT
 import base64
 
+
 # 登录基本信息
 class ZUCC:
     MainURL = "http://xk.zucc.edu.cn/default2.aspx"
@@ -18,8 +19,8 @@ class ZUCC:
     PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
     # xs_main="http://xk.zucc.edu.cn/xs_main.aspx"
 
-# 登录账号POST
 
+# 登录账号POST
 
 
 class Account:
@@ -42,7 +43,7 @@ class Account:
         image_response = self.session.get(ZUCC.CheckCodeURL, stream=True)
         image = image_response.content
         if sys.platform == "linux":
-            img_dir=os.getcwd()+"/"
+            img_dir = os.getcwd() + "/"
         else:
             img_dir = os.getcwd() + "\\"
         print("###Saved in " + img_dir + "code.gif")
@@ -98,7 +99,8 @@ class Account:
         print("#Check account password and restart!")
 
     def get_plan_course_page(self):
-        url = ZUCC.PlanCourageURL+"?xh="+self.account_data["username"]+"&xm="+str(self.name_base64,encoding="utf8")+"&gnmkdm=N121101"
+        url = ZUCC.PlanCourageURL + "?xh=" + self.account_data["username"] + "&xm=" + str(self.name_base64,
+                                                                                          encoding="utf8") + "&gnmkdm=N121101"
         header = ZUCC.InitHeader
         header["Referer"] = ZUCC.PlanCourageURL + "?xh=" + self.account_data["username"]
         # header["Upgrade-Insecure-Requests"] = "1"
@@ -117,7 +119,6 @@ class Account:
         # self.soup = BeautifulSoup(response, "lxml")
         # print(self.soup.find("title"))
 
-
     def get_public_course_page(self):
         pass
 
@@ -132,4 +133,3 @@ if __name__ == "__main__":
     me = Account()
     me.login()
     me.get_plan_course_page()
-
