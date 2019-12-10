@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
 import base64
+import CATCH_PUBLIC_COURSE as pub
 
 # 登录基本信息
 class ZUCC:
@@ -131,5 +132,5 @@ class Account:
 if __name__ == "__main__":
     me = Account()
     me.login()
-    me.get_plan_course_page()
-
+    # me.get_plan_course_page()
+    pub.get_course(me)
