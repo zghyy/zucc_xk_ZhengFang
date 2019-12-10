@@ -10,7 +10,7 @@ class CourseSpider:
     def catch_plan_course_page(self):
         self.me.login()
         soup = self.me.get_soup()
-        for item in
+        # for item in
 
 
 if __name__ == "__main__":
