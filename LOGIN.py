@@ -91,8 +91,8 @@ class Account:
                 print("#Login：" + self.soup.find("title").text)
                 self.name = self.soup.find("span", id="xhxm").text[0:-2]
                 print("#姓名：", self.name)
-                self.name_base64 = base64.b64encode(self.name.encode('gb2312'))
-                print(self.name_base64)
+                # self.name_base64 = base64.b64encode(self.name.encode('gb2312'))
+                # print(self.name_base64)
                 return
             else:
                 try_time += 1
