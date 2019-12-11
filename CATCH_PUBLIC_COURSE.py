@@ -8,7 +8,8 @@ class info:
 
 
 def get_course(account):
-    get_public_page(account)
+    response=get_public_page(account)
+    # show_the_message_of_page(response)
     pass
 
 def get_public_page(account):
@@ -19,9 +20,22 @@ def get_public_page(account):
     time.sleep(3.5)
     if response.url != url:
         response=read_rules(account)
+    time.sleep(3.5)
+    #------get_public_page success------
+    print("------get_public_page success------")
+    soup=BeautifulSoup(response.text,"lxml")
+    # print(soup.text)
+    POSTData={
+        "__EVENTTARGET":"dpkcmcGrid$txtPageSize",
+        "__VIEWSTATE":soup.find("input",type="hidden",id="__VIEWSTATE").get("value"),
+        "__VIEWSTATEGENERATOR": soup.find("input",type="hidden", id="__VIEWSTATEGENERATOR").get("value"),
+        "dpkcmcGrid$txtChoosePage":"1",
+        "dpkcmcGrid$txtPageSize":"200"
+    }
+    response=account.session.post(url=response.url,data=POSTData)
     # print(response.text)
     # print(response.url)
-
+    return response
 
 def read_rules(account):
     url = info.rules_page+"?xh="+account.account_data["username"]
@@ -30,11 +44,18 @@ def read_rules(account):
     response=account.session.get(url=url,headers=header)
     # print(response.text)
     soup=BeautifulSoup(response.text,"lxml")
-    POSTDate={"__VIEWSTATE":soup.find("input",id="__VIEWSTATE").get("value"),
+    POSTDate={
+          "__VIEWSTATE":soup.find("input",id="__VIEWSTATE").get("value"),
           "__VIEWSTATEGENERATOR":soup.find("input",id="__VIEWSTATEGENERATOR").get("value"),
           "button1":"我已认真阅读，并同意以上内容",
           "TextBox1":0
     }
-    response = account.session.post(url, data=POSTDate)
+    response = account.session.post(url=url, data=POSTDate)
+    print(response.text)
     return response
 
+def show_the_message_of_page(response):
+    soup=BeautifulSoup(response.text,"lxml")
+    links=soup.find_all("tr")
+    for link in links:
+        print(link.children.text)
