@@ -6,7 +6,6 @@ import OCR_CODE
 from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
-import base64
 
 
 # 登录基本信息
@@ -36,7 +35,6 @@ class Account:
         self.POSTDate["txtUserName"] = self.account_data["username"]
         self.POSTDate["TextBox2"] = self.account_data["password"]
         self.name = ""
-        self.name_base64 = None
 
     def __refresh_code(self):
         # 获取验证码
@@ -91,36 +89,10 @@ class Account:
                 print("#Login：" + self.soup.find("title").text)
                 self.name = self.soup.find("span", id="xhxm").text[0:-2]
                 print("#姓名：", self.name)
-                self.name_base64 = base64.b64encode(self.name.encode('gb2312'))
-                print(self.name_base64)
                 return
             else:
                 try_time += 1
         print("#Check account password and restart!")
-
-    def get_plan_course_page(self):
-        url = ZUCC.PlanCourageURL + "?xh=" + self.account_data["username"] + "&xm=" + str(self.name_base64,
-                                                                                          encoding="utf8") + "&gnmkdm=N121101"
-        header = ZUCC.InitHeader
-        header["Referer"] = ZUCC.PlanCourageURL + "?xh=" + self.account_data["username"]
-        # header["Upgrade-Insecure-Requests"] = "1"
-        data = dict()
-        data["gnmkdm"] = "N121101"
-        data["xh"] = self.account_data["username"]
-        data["xm"] = self.name_base64
-        print(url)
-        print(data)
-        print(header)
-        response = self.session.get(url=url, headers=header)
-        # response = self.session.get(url=url, params=data,headers=header)
-
-        print()
-        print(response.text)
-        # self.soup = BeautifulSoup(response, "lxml")
-        # print(self.soup.find("title"))
-
-    def get_public_course_page(self):
-        pass
 
     def get_soup(self):
         return self.soup
@@ -132,4 +104,3 @@ class Account:
 if __name__ == "__main__":
     me = Account()
     me.login()
-    me.get_plan_course_page()
