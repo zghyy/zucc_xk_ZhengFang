@@ -133,4 +133,4 @@ if __name__ == "__main__":
     me = Account()
     me.login()
     # me.get_plan_course_page()
-    pub.get_course(me)
+    # pub.get_course(me)
