@@ -7,12 +7,21 @@ import MENU
 
 
 class PlannedCourseInfo:
-    def __init__(self, main_num, name, code, margin, detail):
-        self.num = str(main_num)
-        self.name = str(name)
-        self.code = str(code)
-        self.margin = str(margin)
-        self.detail = copy.deepcopy(detail)
+    def __init__(self, main_num=None, name=None, code=None, margin=None, detail=None, url=None, course_dic=None):
+        if course_dic is None:
+            self.num = str(main_num)
+            self.name = str(name)
+            self.code = str(code)
+            self.margin = str(margin)
+            self.url = url
+            self.detail = copy.deepcopy(detail)
+        else:
+            self.num = course_dic["num"]
+            self.name = course_dic["name"]
+            self.code = course_dic["code"]
+            self.margin = course_dic["margin"]
+            self.url = course_dic["url"]
+            self.detail = course_dic["detail"]
 
     def show_course_summary(self):
         print("主编号:" + self.num
@@ -24,6 +33,14 @@ class PlannedCourseInfo:
         for item in self.detail:
             print("       ∟____ 辅编号:" + item["secondary_num"] + "\t教师:" + item["teacher"]
                   + "\t时间:" + item["time"] + "\t余量:" + item["margin"])
+
+    def to_json(self):
+        """
+        将本类的数据转换为一个json,并返回字符串
+        """
+        js = {"name": self.name, "num": self.num, "code": self.code, "margin": self.margin, "url": self.url,
+              "detail": self.detail}
+        return json.dumps(js)
 
 
 class PlannedCourse:
@@ -37,13 +54,14 @@ class PlannedCourse:
     """
 
     def __init__(self):
-        # 开始登录
+        """初始化登录"""
         self.account = LOGIN.Account()
         self.account.login()
         self.english_course = []
         self.target_english_course = []
 
     def init_menu(self):
+        """输出菜单，并输入想要抢的课程"""
         menu_dic = {
             "1": "本专业课程",
             "2": "大学英语扩展课",
@@ -52,12 +70,12 @@ class PlannedCourse:
         menu = MENU.MENU(menu_dic=menu_dic)
         menu.print_list()
         while True:
-            _key = input(">>>")
+            _key = input("(主菜单)>>>")
             if _key == "1":
                 self.catch_professional_course()
             elif _key == "2":
                 # 设置计划内课程target
-                self.catch_english_course()
+                self.get_english_course()
                 print("输入课程编号选择课程，0返回")
                 for item in self.english_course:
                     item.show_course_summary()
@@ -73,9 +91,9 @@ class PlannedCourse:
                             j_key = input("(辅编号)>>>")
                             if 1 <= int(j_key) <= item_length:
                                 detail = self.english_course[int(i_key) - 1].detail[int(j_key) - 1]
-                                print("你选择了: 辅编号:", detail["secondary_num"], "\t教师:", detail["teacher"]
-                                      , "\t时间:", detail["time"], "\t余量:", detail["margin"])
-                                tmp = {i_key: j_key}
+                                print("你选择了: 辅编号:", detail["secondary_num"], "\t教师:", detail["teacher"],
+                                      "\t时间:", detail["time"], "\t余量:", detail["margin"])
+                                tmp = i_key + ":" + j_key
                                 self.target_english_course.append(tmp)
                                 break
                             elif int(j_key) == 0:
@@ -83,7 +101,7 @@ class PlannedCourse:
                             else:
                                 print("请输入正确的数字")
 
-                    elif i_key == 0:
+                    elif int(i_key) == 0:
                         break
                     else:
                         print("请输入正确的数字")
@@ -93,6 +111,7 @@ class PlannedCourse:
                 print("请输入正确的数字")
 
     def __catch_view_state(self):
+        """抓取 HTML中的 VIEWSTATE"""
         url = LOGIN.ZUCC.PlanCourageURL + "?xh=" + self.account.account_data[
             "username"] + "&xm=" + self.account.name + "&gnmkdm=N121101"
         header = LOGIN.ZUCC.InitHeader
@@ -108,6 +127,7 @@ class PlannedCourse:
         pass
 
     def __enter_english_page(self):
+        """进入计划内选课--英语页面，为抓取数据做准备"""
         self.__catch_view_state()
         url = LOGIN.ZUCC.PlanCourageURL + "?xh=" + self.account.account_data["username"]
         post_data = {"__EVENTTARGET": "", "__EVENTARGUMENT": "", "__LASTFOCUS": "", "__VIEWSTATEGENERATOR": "4842AF95",
@@ -119,23 +139,22 @@ class PlannedCourse:
         links = soup.find_all(name="tr")
         return links
 
-    def catch_english_course(self):
-        links = self.__enter_english_page()
-        planned_course_file = open("planned_course.json", "r")
-        detail_list = json.load(planned_course_file)
-        planned_course_file.close()
-        i = 1
-        for link in links[1:-1]:
-            tmp = link.find_all("td")
-            # print(tmp[0].find(name="a").text, tmp[1].find(name="a").text, tmp[9].text)
-            self.english_course.append(
-                PlannedCourseInfo(i, tmp[1].find(name="a").text, tmp[0].find(name="a").text,
-                                  tmp[9].text, detail_list[i - 1]))
-            i += 1
+    def get_english_course(self):
+        """从文件中取得课程数据"""
+        js_file = open("planned_course_information.json", "r")
+        js_list = json.load(js_file)
+        js_file.close()
+
+        for course in js_list:
+            tmp = PlannedCourseInfo(course_dic=course)
+            self.english_course.append(tmp)
 
     def update_course(self):
+        """更新课程信息并保存到文件"""
         links = self.__enter_english_page()
-        detail_list = []
+        course_list = []
+        i = 1
+        #  遍历10种英语课程
         for link in links[1:-1]:
             tmp = link.find_all("td")
             detail = []
@@ -147,26 +166,60 @@ class PlannedCourse:
             item_soup = BeautifulSoup(item_response.text, "lxml")
             item_trs = item_soup.find_all(name="tr")
             j = 1
+            #  遍历所以的教学班
             for item_tr in item_trs[1:-1]:
                 tds = item_tr.find_all("td")
                 detail_td = {"secondary_num": str(j), "code": tds[0].find(name="input")["value"],
                              "teacher": tds[2].find(name="a").text,
                              "time": tds[3].text,
                              "margin": str(int(tds[11].text) - int(tds[13].text)) + "/" + tds[11].text}
+                #  将教学班信息打包成列表
                 detail.append(detail_td)
                 j += 1
-            detail_list.append(detail)
+            tmp = link.find_all("td")
+            course_list.append(
+                PlannedCourseInfo(main_num=i, name=tmp[1].find(name="a").text, code=tmp[0].find(name="a").text,
+                                  margin=tmp[9].text, detail=detail, url=url))
+            i += 1
+
+        js_str = "["
+        flag = True
+        for course in course_list:
+            if flag:
+                js_str += course.to_json()
+                flag = False
+            else:
+                js_str += "," + course.to_json()
+        js_str += "]"
         # 缓存在文件
-        planned_course_file = open("planned_course.json", "w")
-        planned_course_file.write(json.dumps(detail_list))
+        planned_course_file = open("planned_course_information.json", "w")
+        planned_course_file.write(js_str)
         planned_course_file.close()
 
     def attack(self):
-        if len(self.target_english_course) < 1:
+        self.__catch_view_state()
+        if len(self.target_english_course) == 0:
             print("未选择任何课程，请先选择课程")
+            input("任意键返回")
             return
-        for number in self.target_english_course:
-            pass
+        for target in self.target_english_course:
+            print(target)
+            course_xy = target.split(":")
+            url = "http://" + LOGIN.ZUCC.DOMAIN + "?xh="
+            post_data = {"__EVENTTARGET": "Button1",
+                         "__VIEWSTATEGENERATOR": "55DF6E88",
+                         "RadioButtonList1": "1",
+                         "xkkh": self.english_course[int(course_xy[0]) - 1].detail[int(course_xy[1]) - 1]["code"],
+                         "__VIEWSTATE": self.account.soup.find(name='input', id="__VIEWSTATE")["value"]}
+            print(url)
+            print(post_data)
+            print()
+            response = self.account.session.post(url=url, data=post_data)
+            print(response)
+            soup = BeautifulSoup(response.text, "lxml")
+            print(soup.find("title"))
+            # print(response.text)
+            print(soup.find(name="script"))
 
 
 if __name__ == "__main__":
