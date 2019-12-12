@@ -1,16 +1,6 @@
-import RW_ACCOUNT
 import sys
-
-
-class MENU:
-    """给这个类传入一个字典，可以输出一个菜单,执行get_key()可以取得一个用户输入值"""
-
-    def __init__(self, menu_dic):
-        self.menu_dic = menu_dic
-
-    def print_list(self):
-        for _key in self.menu_dic:
-            print("[" + _key + "]: " + self.menu_dic[_key])
+import RW_ACCOUNT
+import MENU
 
 
 def begin_catch_course():
@@ -19,7 +9,7 @@ def begin_catch_course():
         "2":"公选课",
         "0":"返回主菜单"
     }
-    catch_course_menu = MENU(catch_course_dic)
+    catch_course_menu = MENU.MENU(catch_course_dic)
     catch_course_menu.print_list()
     while True:
         _key = input(">>>")
@@ -39,7 +29,7 @@ if __name__ == "__main__":
         "2": "开始抢课",
         "0": "退出"
     }
-    init_menu = MENU(init_dic)
+    init_menu = MENU.MENU(init_dic)
     init_menu.print_list()
     while True:
         key = input(">>>")

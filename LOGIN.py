@@ -10,6 +10,7 @@ import RW_ACCOUNT
 
 # 登录基本信息
 class ZUCC:
+    DOMAIN = "xk.zucc.edu.cn"
     MainURL = "http://xk.zucc.edu.cn/default2.aspx"
     InitHeader = {"Host": "xk.zucc.edu.cn", "Connection": "keep-alive",
                   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"}
@@ -26,11 +27,10 @@ class Account:
     def __init__(self):
         self.session = requests.Session()
         self.soup = None
-        self.POSTDate = dict(__LASTFOCUS="",
-                             __VIEWSTATE="随机码",
-                             __VIEWSTATEGENERATOR="9BD98A7D", __EVENTTARGET="", __EVENTARGUMENT="", txtUserName="",
-                             TextBox2="", txtSecretCode="-1", RadioButtonList1="%E5%AD%A6%E7%94%9F",
-                             Button1="%E7%99%BB%E5%BD%95")
+        self.POSTDate = {'__LASTFOCUS': "", '__VIEWSTATE': "随机码", '__VIEWSTATEGENERATOR': "9BD98A7D",
+                         '__EVENTTARGET': "", '__EVENTARGUMENT': "", 'txtUserName': "", 'TextBox2': "",
+                         'txtSecretCode': "-1", 'RadioButtonList1': "%E5%AD%A6%E7%94%9F",
+                         'Button1': "%E7%99%BB%E5%BD%95"}
         self.account_data = RW_ACCOUNT.read_account()
         self.POSTDate["txtUserName"] = self.account_data["username"]
         self.POSTDate["TextBox2"] = self.account_data["password"]
@@ -93,12 +93,6 @@ class Account:
             else:
                 try_time += 1
         print("#Check account password and restart!")
-
-    def get_soup(self):
-        return self.soup
-
-    def get_session(self):
-        return self.session
 
 
 if __name__ == "__main__":
