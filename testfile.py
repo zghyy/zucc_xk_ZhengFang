@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -27,3 +28,14 @@ def deal_request():
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=5000, debug=True)
+=======
+import sys
+print("\033[1;31;47m"+sys.platform+"\033[0m")
+
+dic = {
+    "1":"100",
+    "2":"222"
+}
+for x in dic:
+    print(dic[x])
+>>>>>>> develop-csl

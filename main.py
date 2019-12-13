@@ -1,45 +1,45 @@
+import sys
 import RW_ACCOUNT
-import CATCH_COURSE_DATA
+import MENU
 
 
-class MENU:
-    key = 0
-    key_range = 4
-    item = [
-        "设置账号密码",
-        "设置目标课程",
-        "抓取课程数据",
-        "开始抢课",
-    ]
-
-    def print_list(self):
-        i = 1
-        for x in self.item:
-            print("[", i, "]" + x)
-            i += 1
-        print("[ 0 ]退出程序")
-        self.key_range = i - 1
-
-    def get_key(self):
-        while True:
-            self.key = int(input("input-number>>"))
-            if self.key > self.key_range or self.key < 0:
-                print("无效的参数")
-                continue
-            print("select:", self.item[self.key-1])
-            if self.key == 0:
-                return
-            elif self.key == 1:
-                RW_ACCOUNT.set_account()
-            elif self.key == 2:
-                pass
-            elif self.key == 3:
-                pass
-            elif self.key == 4:
-                pass
+def begin_catch_course():
+    catch_course_dic = {
+        "1":"计划内选课",
+        "2":"公选课",
+        "0":"返回主菜单"
+    }
+    catch_course_menu = MENU.MENU(catch_course_dic)
+    catch_course_menu.print_list()
+    while True:
+        _key = input(">>>")
+        if _key == "1":
+            pass
+        elif _key == "2":
+            pass
+        elif _key == "0":
+            return
+        else:
+            print("请输入正确的数字")
 
 
 if __name__ == "__main__":
-    begin_menu = MENU()
-    begin_menu.print_list()
-    begin_menu.get_key()
+    init_dic = {
+        "1": "设置账号密码",
+        "2": "开始抢课",
+        "0": "退出"
+    }
+    init_menu = MENU.MENU(init_dic)
+    init_menu.print_list()
+    while True:
+        key = input(">>>")
+        if key == "1":
+            RW_ACCOUNT.set_account()
+            init_menu.print_list()
+        elif key == "2":
+            begin_catch_course()
+            init_menu.print_list()
+        elif key == "0":
+            sys.exit()
+        else:
+            print("请输入正确的数字")
