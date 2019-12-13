@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
 import base64
+import CATCH_PUBLIC_COURSE as pub
 
 # 登录基本信息
 class ZUCC:
@@ -23,7 +24,7 @@ class ZUCC:
 
 
 class Account:
-    def __init__(self):
+    def __init__(self,name=None,password=None):
         self.session = requests.Session()
         self.soup = None
         self.POSTDate = dict(__LASTFOCUS="",
@@ -32,8 +33,12 @@ class Account:
                              TextBox2="", txtSecretCode="-1", RadioButtonList1="%E5%AD%A6%E7%94%9F",
                              Button1="%E7%99%BB%E5%BD%95")
         self.account_data = RW_ACCOUNT.read_account()
-        self.POSTDate["txtUserName"] = self.account_data["username"]
-        self.POSTDate["TextBox2"] = self.account_data["password"]
+        if name==None and password == None:
+            self.POSTDate["txtUserName"] = self.account_data["username"]
+            self.POSTDate["TextBox2"] = self.account_data["password"]
+        else:
+            self.POSTDate["txtUserName"]=name
+            self.POSTDate["TextBox2"]=password
         self.name = ""
         self.name_base64 = None
 
@@ -90,8 +95,8 @@ class Account:
                 print("#Login：" + self.soup.find("title").text)
                 self.name = self.soup.find("span", id="xhxm").text[0:-2]
                 print("#姓名：", self.name)
-                self.name_base64 = base64.b64encode(self.name.encode('gb2312'))
-                print(self.name_base64)
+                # self.name_base64 = base64.b64encode(self.name.encode('gb2312'))
+                # print(self.name_base64)
                 return
             else:
                 try_time += 1
@@ -131,5 +136,5 @@ class Account:
 if __name__ == "__main__":
     me = Account()
     me.login()
-    me.get_plan_course_page()
-
+    # me.get_plan_course_page()
+    # pub.get_course(me)
