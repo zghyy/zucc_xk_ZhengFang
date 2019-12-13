@@ -97,15 +97,20 @@ class PublicCourse:
         while True:
             print("当前正在抢 " + course_list[int(number) - 2].name)
             response = self.account.session.post(url=url, data=POSTData)
-            if self.num_of_selected_courses(response) == self.num_of_selected + 1:
+            if self.num_of_selected_courses(response) == (self.num_of_selected + 1):
+                print("抢课成功！！！！")
                 self.num_of_selected += 1
-                break
+                return
             else:
-                print("抢课失败！\t" + "错误原因："
-                      + BeautifulSoup(response.text, 'lxml').find('script').text.split('\'')[1]
+                try:
+                    reason="错误原因："+BeautifulSoup(response.text, 'lxml').find('script').text.split('\'')[1]
+                except BaseException:
+                    reason="错误原因：未知或已抢课成功"
+                print("抢课失败！\t"
+                      + reason
                       + "\t已选课程数量" + str(self.num_of_selected))
 
-        print(BeautifulSoup(response.text, 'lxml').find('script').text.split('\'')[1])
+        # print(BeautifulSoup(response.text, 'lxml').find('script').text.split('\'')[1])
         # print(response.text+"================================================")
 
     def num_of_selected_courses(self, response):
@@ -132,6 +137,7 @@ class PublicCourse:
             lessen.show_course_info()
 
         self.num_of_selected = self.num_of_selected_courses(response)
+        print(self.num_of_selected)
         self.catch_course(course_list, response)
         pass
 
