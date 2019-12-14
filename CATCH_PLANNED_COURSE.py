@@ -27,13 +27,12 @@ class PlannedCourseInfo:
     def show_course_summary(self):
         print("主编号:" + self.num
               + "\t名称:" + self.name
-              + "\t代码:" + self.code
-              + "\t总余量:" + self.margin)
+              + "\t代码:" + self.code)
 
     def show_course_info(self):
         for item in self.detail:
             print("       ∟____ 辅编号:" + item["secondary_num"] + "\t教师:" + item["teacher"]
-                  + "\t时间:" + item["time"] + "\t余量:" + item["margin"])
+                  + "\t时间:" + item["time"])
 
     def to_json(self):
         """
@@ -54,17 +53,17 @@ class PlannedCourse:
         5：开始抢课
     """
 
-    def __init__(self):
+    def __init__(self,account):
         """初始化登录"""
-        self.account = LOGIN.Account()
-        self.account.login()
+        self.account = account
+        # self.account.login()
         self.english_course = []
-        self.target = "1:1"
+        self.target = ""
 
     def init_menu(self):
         """输出菜单，并输入想要抢的课程"""
         menu_dic = {
-            "1": "本专业课程",
+            "1": "本专业课程(无效)",
             "2": "大学英语扩展课",
             "0": "退出",
         }
@@ -77,7 +76,7 @@ class PlannedCourse:
             elif _key == "2":
                 # 设置计划内课程target
                 self.get_english_course()
-                print("输入课程编号选择课程，0返回")
+                print("输入课程编号选择课程，0返回，-1更新数据")
                 for item in self.english_course:
                     item.show_course_summary()
                     # item.show_course_info()
@@ -93,7 +92,7 @@ class PlannedCourse:
                             if 1 <= int(j_key) <= item_length:
                                 detail = self.english_course[int(i_key) - 1].detail[int(j_key) - 1]
                                 print("你选择了: 辅编号:", detail["secondary_num"], "\t教师:", detail["teacher"],
-                                      "\t时间:", detail["time"], "\t余量:", detail["margin"])
+                                      "\t时间:", detail["time"])
                                 tmp = i_key + ":" + j_key
                                 self.target = tmp
                                 return
@@ -104,6 +103,8 @@ class PlannedCourse:
 
                     elif int(i_key) == 0:
                         break
+                    elif int(i_key) == -1:
+                        self.update_course()
                     else:
                         print("请输入正确的数字")
             elif _key == "0":
@@ -219,17 +220,23 @@ class PlannedCourse:
                      "RadioButtonList1": "1",
                      "xkkh": self.english_course[x - 1].detail[y - 1]["code"],
                      "__VIEWSTATE": self.account.soup.find_all(name='input', id="__VIEWSTATE")[0]["value"]}
-        # print(post_data)
-        # print(self.english_course[x - 1].url)
-        response = self.account.session.post(url=self.english_course[x - 1].url, data=post_data)
-        # print(response.text)
-        soup = BeautifulSoup(response.text, "lxml")
-        print(soup.find(name="script").text.split("'")[1])
+        while True:
+            response = self.account.session.post(url=self.english_course[x - 1].url, data=post_data)
+            soup = BeautifulSoup(response.text, "lxml")
+            try :
+                reply = soup.find(name="script").text.split("'")[1]
+            except BaseException:
+                reply = "未知错误"
+            print(reply)
+            if reply == "选课成功！":
+                return
 
 
 if __name__ == "__main__":
-    planned_course_spider = PlannedCourse()
-    # planned_course_spider.init_menu()
+    account = LOGIN.Account()
+    account.login()
+    planned_course_spider = PlannedCourse(account)
+    planned_course_spider.init_menu()
     planned_course_spider.attack()
     # planned_course_spider.catch_english_course()
     # planned_course_spider.update_course()
