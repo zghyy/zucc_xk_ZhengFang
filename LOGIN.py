@@ -24,7 +24,7 @@ class ZUCC:
 
 
 class Account:
-    def __init__(self):
+    def __init__(self,name=None,password=None):
         self.session = requests.Session()
         self.soup = None
         self.POSTDate = {'__LASTFOCUS': "", '__VIEWSTATE': "随机码", '__VIEWSTATEGENERATOR': "9BD98A7D",
@@ -32,8 +32,12 @@ class Account:
                          'txtSecretCode': "-1", 'RadioButtonList1': "%E5%AD%A6%E7%94%9F",
                          'Button1': "%E7%99%BB%E5%BD%95"}
         self.account_data = RW_ACCOUNT.read_account()
-        self.POSTDate["txtUserName"] = self.account_data["username"]
-        self.POSTDate["TextBox2"] = self.account_data["password"]
+        if name==None and password == None:
+            self.POSTDate["txtUserName"] = self.account_data["username"]
+            self.POSTDate["TextBox2"] = self.account_data["password"]
+        else:
+            self.POSTDate["txtUserName"]=name
+            self.POSTDate["TextBox2"]=password
         self.name = ""
 
     def __refresh_code(self):
