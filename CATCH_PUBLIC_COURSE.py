@@ -206,8 +206,8 @@ class PublicCourseInfo:
             return False
 
 
-if __name__ == '__main__':
-    account = LOGIN.Account()
-    account.login()
-    public = PublicCourse(account)
-    public.run()
+# if __name__ == '__main__':
+#     account = LOGIN.Account()
+#     account.login()
+#     public = PublicCourse(account)
+#     public.run()

@@ -1,6 +1,9 @@
 import sys
 import RW_ACCOUNT
 import MENU
+import CATCH_PUBLIC_COURSE as pub
+import CATCH_PLANNED_COURSE as plan
+import LOGIN
 
 
 def begin_catch_course():
@@ -14,9 +17,12 @@ def begin_catch_course():
     while True:
         _key = input(">>>")
         if _key == "1":
-            pass
+            planned_course_spider = plan.PlannedCourse(account)
+            planned_course_spider.init_menu()
+            planned_course_spider.attack()
         elif _key == "2":
-            pass
+            public = pub.PublicCourse(account)
+            public.run()
         elif _key == "0":
             return
         else:
@@ -37,6 +43,8 @@ if __name__ == "__main__":
             RW_ACCOUNT.set_account()
             init_menu.print_list()
         elif key == "2":
+            account = LOGIN.Account()
+            account.login()
             begin_catch_course()
             init_menu.print_list()
         elif key == "0":
