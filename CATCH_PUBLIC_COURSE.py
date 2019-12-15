@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import time
-import LOGIN
 import MENU
 
 
@@ -27,7 +26,6 @@ class PublicCourse:
         if response.url != url:
             print('dismissing the rule')
             response = self.read_rules(response)
-        # ------get_public_page success------
         soup = BeautifulSoup(response.text, "lxml")
         POSTData = {
             "__EVENTTARGET": "dpkcmcGrid$txtPageSize",
@@ -54,7 +52,6 @@ class PublicCourse:
             "TextBox1": 0
         }
         response = self.account.session.post(url=url, data=POSTDate)
-        # print(response.text)
         return response
 
     def get_the_message_of_page(self, response):
@@ -79,7 +76,7 @@ class PublicCourse:
         return
 
     def catch_course(self, response):
-        number = str(int(input("输入想要抢的课程编号(课程编号即为第一项序号)\n退出程序输入数字‘0’\n")) + 1)
+        number = str(int(input("输入想要抢的课程编号(课程编号即为第一项序号)\n退出程序输入数字‘0’\n>>>")) + 1)
         if number == "1":
             return
         url = info.public_course_page_main + "?xh=" + self.account.account_data["username"]
@@ -94,7 +91,6 @@ class PublicCourse:
         }
         POSTData["kcmcGrid$ctl" + number.zfill(2) + "$xk"] = "on"
         POSTData["kcmcGrid$ctl" + number.zfill(2) + "$jc"] = "on"
-        # print(POSTData)
         while True:
             print("当前正在抢 " + self.course_list[int(number) - 2].name)
             response = self.account.session.post(url=url, data=POSTData)
@@ -111,8 +107,6 @@ class PublicCourse:
                       + reason
                       + "\t已选课程数量" + str(self.num_of_selected))
 
-        # print(BeautifulSoup(response.text, 'lxml').find('script').text.split('\'')[1])
-        # print(response.text+"================================================")
 
     def num_of_selected_courses(self, response):
         soup = BeautifulSoup(response.text, "lxml")
@@ -131,14 +125,14 @@ class PublicCourse:
 
     def search(self):
         search_dic = {
-            "序号": "关键词类型(模糊搜索)",
+            "序号": "关键词类型",
             "1": "课程名称",
             "2": "教师",
             "3": "时间"
         }
         search_dic_menu = MENU.MENU(search_dic)
         search_dic_menu.print_list()
-        n = input()
+        n = input(">>>")
         key = input("输入查询信息：")
         if n == "1":
             for lesson in self.course_list:
@@ -165,7 +159,7 @@ class PublicCourse:
         dic_of_public_menu=MENU.MENU(dic_of_public)
         dic_of_public_menu.print_list()
         while True:
-            n = input()
+            n = input(">>>")
             if n == "1":
                 for lessen in self.course_list:
                     lessen.show_course_info()
@@ -173,7 +167,7 @@ class PublicCourse:
             elif n == "2":
                 self.search()
                 break
-            elif n == "3":
+            elif n == "0":
                 return
             print("请输入正确的序号")
         self.num_of_selected = self.num_of_selected_courses(response)
@@ -206,8 +200,3 @@ class PublicCourseInfo:
             return False
 
 
-# if __name__ == '__main__':
-#     account = LOGIN.Account()
-#     account.login()
-#     public = PublicCourse(account)
-#     public.run()

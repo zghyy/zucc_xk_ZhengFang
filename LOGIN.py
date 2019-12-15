@@ -2,7 +2,6 @@
 import os
 import sys
 import OCR_CODE
-# 安装lxml
 from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
@@ -17,7 +16,6 @@ class ZUCC:
     CheckCodeURL = "http://xk.zucc.edu.cn/CheckCode.aspx?"
     CheckCodeHeader = ""
     PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
-    # xs_main="http://xk.zucc.edu.cn/xs_main.aspx"
 
 
 # 登录账号POST
@@ -72,7 +70,7 @@ class Account:
     # 登录进入主页
     def login(self):
         print("#Begin to login")
-        print("##Get init page")
+        # print("##Get init page")
         while True:
             init_response = self.session.get(url=ZUCC.MainURL, headers=ZUCC.InitHeader)
             if init_response.ok:
@@ -80,8 +78,8 @@ class Account:
                 break
         login_soup = BeautifulSoup(init_response.text, "lxml")
         self.POSTDate["__VIEWSTATE"] = login_soup.find('input', attrs={'name': '__VIEWSTATE'})["value"]
-        print("###GET StateCode:", self.POSTDate["__VIEWSTATE"])  # 随机码
-        print("###GET checkCode")
+        # print("###GET StateCode:", self.POSTDate["__VIEWSTATE"])  # 随机码
+        # print("###GET checkCode")
         self.__get_check_code_ocr()
         print("##POST login")
         try_time = 0
@@ -93,6 +91,7 @@ class Account:
                 print("#Login：" + self.soup.find("title").text)
                 self.name = self.soup.find("span", id="xhxm").text[0:-2]
                 print("#姓名：", self.name)
+                print("\033[1;36m 登录成功 \033[0m")
                 return
             else:
                 try_time += 1
