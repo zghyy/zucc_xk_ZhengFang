@@ -19,7 +19,7 @@ def begin_catch_course():
         if _key == "1":
             planned_course_spider = plan.PlannedCourse(account)
             planned_course_spider.init_menu()
-            planned_course_spider.attack()
+            # planned_course_spider.attack()
             catch_course_menu.print_list()
         elif _key == "2":
             public = pub.PublicCourse(account)
