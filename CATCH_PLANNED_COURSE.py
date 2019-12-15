@@ -76,7 +76,7 @@ class PlannedCourse:
             elif _key == "2":
                 # 设置计划内课程target
                 self.get_english_course()
-                print("输入课程编号选择课程，0返回，-1更新数据")
+                print("输入课程编号选择课程，0返回，\033[1;31m -1更新数据 \033[0m")
                 for item in self.english_course:
                     item.show_course_summary()
                     # item.show_course_info()
