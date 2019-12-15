@@ -340,7 +340,7 @@ class PlannedCourse:
         header = LOGIN.ZUCC.InitHeader
         header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
         response = self.account.session.get(url=self.professional_course[x - 1].url, headers=header)
-        print(self.professional_course[x - 1].url)
+        # print(self.professional_course[x - 1].url)
         # print(response.text)
         self.account.soup = BeautifulSoup(response.text, "lxml")
         post_data = {"__EVENTTARGET": "Button1",
