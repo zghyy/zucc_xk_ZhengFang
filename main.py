@@ -8,9 +8,9 @@ import LOGIN
 
 def begin_catch_course():
     catch_course_dic = {
-        "1":"计划内选课",
-        "2":"公选课",
-        "0":"返回主菜单"
+        "1": "计划内选课",
+        "2": "公选课",
+        "0": "返回主菜单"
     }
     catch_course_menu = MENU.MENU(catch_course_dic)
     catch_course_menu.print_list()
@@ -20,9 +20,11 @@ def begin_catch_course():
             planned_course_spider = plan.PlannedCourse(account)
             planned_course_spider.init_menu()
             planned_course_spider.attack()
+            catch_course_menu.print_list()
         elif _key == "2":
             public = pub.PublicCourse(account)
             public.run()
+            catch_course_menu.print_list()
         elif _key == "0":
             return
         else:
@@ -30,6 +32,8 @@ def begin_catch_course():
 
 
 if __name__ == "__main__":
+    print("\033[1;36m 欢迎来到正方教务系统抢课助手\033[0m\n本程序主要自动登录+爬取课程信息+发送选课数据包进行抢课"
+          "\n\033[1;31m 第一次运行时记得先设置账号密码,之后运行就不需要设置了(存放在account.json中哦~),英语拓展课如果报错先更新一下\033[0m")
     init_dic = {
         "1": "设置账号密码",
         "2": "开始抢课",
