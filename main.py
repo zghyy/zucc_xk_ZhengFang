@@ -3,13 +3,15 @@ import RW_ACCOUNT
 import MENU
 import CATCH_PUBLIC_COURSE as pub
 import CATCH_PLANNED_COURSE as plan
+import CATCH_OUTPLANNED_COURSE as outplan
 import LOGIN
 
 
 def begin_catch_course():
     catch_course_dic = {
         "1": "计划内选课",
-        "2": "公选课",
+        "2": "跨专业选课(无效,还在开发)",
+        "3": "公选课",
         "0": "返回主菜单"
     }
     catch_course_menu = MENU.MENU(catch_course_dic)
@@ -22,6 +24,9 @@ def begin_catch_course():
             # planned_course_spider.attack()
             catch_course_menu.print_list()
         elif _key == "2":
+            outplanned = outplan.OutPlannedCourse(account)
+            outplanned.run()
+        elif _key == "3":
             public = pub.PublicCourse(account)
             public.run()
             catch_course_menu.print_list()
