@@ -330,7 +330,7 @@ class PlannedCourse:
                 reply = soup.find(name="script").text.split("'")[1]
             except BaseException:
                 reply = "未知错误"
-            print(reply)
+            print(reply+"\t\t"+str(time.strftime('%m-%d-%H-%M-%S',time.localtime(time.time()))))
             if reply == "选课成功！":
                 return
 
