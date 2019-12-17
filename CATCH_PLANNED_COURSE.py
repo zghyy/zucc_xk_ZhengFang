@@ -33,6 +33,7 @@ class PlannedCourseInfo:
         for item in self.detail:
             print("       ∟____ 辅编号:" + item["secondary_num"] + "\t教师:" + item["teacher"]
                   + "\t时间:" + item["time"])
+            # print(self.code)
 
     def to_json(self):
         """
@@ -63,7 +64,7 @@ class PlannedCourse:
     def init_menu(self):
         """输出菜单，并输入想要抢的课程"""
         menu_dic = {
-            "-1":"更新数据",
+            "-1": "更新数据",
             "1": "本专业课程",
             "2": "大学英语扩展课",
             "0": "退出",
@@ -71,7 +72,7 @@ class PlannedCourse:
         menu = MENU.MENU(menu_dic=menu_dic)
         menu.print_list()
         while True:
-            _key = input("(主菜单)>>>")
+            _key = input(">>>")
             if int(_key) == 1:
                 # 设置本专业课程target
                 self.get_professional_course()
@@ -160,9 +161,6 @@ class PlannedCourse:
         self.account.soup = BeautifulSoup(response.text, "lxml")
         # print(response.status_code)
 
-    def catch_professional_course(self):
-        pass
-
     def __enter_english_page(self):
         """进入计划内选课--英语页面，为抓取数据做准备"""
         self.__catch_view_state()
@@ -184,6 +182,7 @@ class PlannedCourse:
                      "xx": "", "Button5": "本专业选课",
                      "__VIEWSTATE": self.account.soup.find(name='input', id="__VIEWSTATE")["value"]}
         response = self.account.session.post(url=url, data=post_data)
+        # print(response.text)
         self.account.soup = BeautifulSoup(response.text, "lxml")
         links = self.account.soup.find_all(name="tr")
         return links
@@ -263,18 +262,14 @@ class PlannedCourse:
         for link in links[1:-1]:
             tmp = link.find_all("td")
             detail = []
-            url = "http://" + LOGIN.ZUCC.DOMAIN + "/clsPage/xsxjs.aspx"
+            url = "http://" + LOGIN.ZUCC.DOMAIN + "/clsPage/xsxjs.aspx?" + "xkkh=" + \
+                  tmp[0].find(name="a")["onclick"].split("=")[1][0:-3] + "&xh=" + self.account.account_data["username"]
             header = LOGIN.ZUCC.InitHeader
             header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
             time.sleep(4)
-            data = {
-                "xkkh":tmp[0].find(name="a")["onclick"].split("=")[1][0:-3],
-                "xh":self.account.account_data["username"]
-            }
-            print(url)
-            print(data)
-            item_response = self.account.session.get(url=url, headers=header,params=data)
-            print(item_response.text)
+            # print(url)
+            item_response = self.account.session.get(url=url, headers=header)
+            # print(item_response.text)
             item_soup = BeautifulSoup(item_response.text, "lxml")
             item_trs = item_soup.find_all(name="tr")
             j = 1
@@ -309,17 +304,16 @@ class PlannedCourse:
         professional_file.close()
         print("\n更新完成！")
 
-
     def attack_english(self):
         self.get_english_course()
         self.__enter_english_page()
         course_xy = self.target.split(":")
         x = int(course_xy[0])
         y = int(course_xy[1])
-        # print("x ", x, ":y ", y)
         header = LOGIN.ZUCC.InitHeader
         header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
         response = self.account.session.get(url=self.english_course[x - 1].url, headers=header)
+        # print(self.english_course[x - 1].url)
         self.account.soup = BeautifulSoup(response.text, "lxml")
         post_data = {"__EVENTTARGET": "Button1",
                      "__VIEWSTATEGENERATOR": "55DF6E88",
@@ -343,16 +337,18 @@ class PlannedCourse:
         course_xy = self.target.split(":")
         x = int(course_xy[0])
         y = int(course_xy[1])
-        # print("x ", x, ":y ", y)
         header = LOGIN.ZUCC.InitHeader
         header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
         response = self.account.session.get(url=self.professional_course[x - 1].url, headers=header)
+        # print(self.professional_course[x - 1].url)
+        # print(response.text)
         self.account.soup = BeautifulSoup(response.text, "lxml")
         post_data = {"__EVENTTARGET": "Button1",
                      "__VIEWSTATEGENERATOR": "55DF6E88",
                      "RadioButtonList1": "1",
                      "xkkh": self.professional_course[x - 1].detail[y - 1]["code"],
                      "__VIEWSTATE": self.account.soup.find_all(name='input', id="__VIEWSTATE")[0]["value"]}
+
         while True:
             response = self.account.session.post(url=self.professional_course[x - 1].url, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
@@ -371,6 +367,5 @@ if __name__ == "__main__":
     planned_course_spider = PlannedCourse(account)
     # planned_course_spider.update_course()
     planned_course_spider.init_menu()
-    # planned_course_spider.attack()
     # planned_course_spider.catch_english_course()
     # planned_course_spider.update_course()
