@@ -24,8 +24,10 @@ def begin_catch_course():
             # planned_course_spider.attack()
             catch_course_menu.print_list()
         elif _key == "2":
-            outplanned = outplan.OutPlannedCourse(account)
-            outplanned.run()
+            print("此功能暂时无效")
+            return
+            # outplanned = outplan.OutPlannedCourse(account)
+            # outplanned.run()
         elif _key == "3":
             public = pub.PublicCourse(account)
             public.run()

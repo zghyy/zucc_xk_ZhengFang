@@ -1,19 +1,18 @@
 import os
 # 安装Pillow
 from PIL import Image
-import matplotlib.pyplot as plt
-import sys
+# import matplotlib.pyplot as plt
 
-
-def show_code(image=None, path='.\\'):
-    if sys.platform== "linux":
-        path='./'
-    if image:
-        image = Image.open(path + "code.gif")
-    plt.figure("CODE")
-    plt.imshow(image)
-    plt.show()
-    return image
+#
+# def show_code(image=None, path='.\\'):
+#     if sys.platform== "linux":
+#         path='./'
+#     if image:
+#         image = Image.open(path + "code.gif")
+#     plt.figure("CODE")
+#     plt.imshow(image)
+#     plt.show()
+#     return image
 
 
 def stay_blue2gray(image):
@@ -46,21 +45,24 @@ def split_image(image):
 
 
 def ocr(images, dir_now):
-    if sys.platform == "linux":
-        model_path = dir_now + r'zfgetcode/data/model'
-    else:
-        model_path = dir_now + r'zfgetcode\data\model'
     result = ""
     models = []
     file_names = []
     # 加载模型
-    for filename in os.listdir(model_path):
-        try:
+    try:
+        model_path = dir_now + r'zfgetcode\data\model'
+        for filename in os.listdir(model_path):
             model = Image.open(model_path + "\\" + filename)
-        except BaseException:
+            file_names.append(filename[0:1])
+            models.append(model.convert('L'))
+
+    except BaseException:
+        dir_now=dir_now[:-1]+"/"
+        model_path = dir_now + r'zfgetcode/data/model'
+        for filename in os.listdir(model_path):
             model = Image.open(model_path + "/" + filename)
-        file_names.append(filename[0:1])
-        models.append(model.convert('L'))
+            file_names.append(filename[0:1])
+            models.append(model.convert('L'))
 
     # 分别识别切割的单子字符
     for image in images:
