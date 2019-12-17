@@ -67,6 +67,7 @@ class PlannedCourse:
             "-1": "更新数据",
             "1": "本专业课程",
             "2": "大学英语扩展课",
+            "3": "跨专业选课(无效)",
             "0": "退出",
         }
         menu = MENU.MENU(menu_dic=menu_dic)
@@ -141,6 +142,8 @@ class PlannedCourse:
                         self.update_course()
                     else:
                         print("请输入正确的数字")
+            # elif int(_key) == 3:
+            #     pass
             elif int(_key) == -1:
                 self.update_course()
             elif int(_key) == 0:
@@ -218,7 +221,7 @@ class PlannedCourse:
             detail = []
             url = "http://" + LOGIN.ZUCC.DOMAIN + tmp[0].find(name="a")["onclick"][21:-8]
             header = LOGIN.ZUCC.InitHeader
-            header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
+            header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh="+self.account.account_data['username']
             time.sleep(4)
             item_response = self.account.session.get(url=url, headers=header)
             item_soup = BeautifulSoup(item_response.text, "lxml")
