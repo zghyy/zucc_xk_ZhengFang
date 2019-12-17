@@ -64,10 +64,9 @@ class PlannedCourse:
     def init_menu(self):
         """输出菜单，并输入想要抢的课程"""
         menu_dic = {
-            "-1": "更新数据",
+            "-1": "更新数据（需要等待一分半左右）",
             "1": "本专业课程",
             "2": "大学英语扩展课",
-            "3": "跨专业选课(无效)",
             "0": "退出",
         }
         menu = MENU.MENU(menu_dic=menu_dic)
