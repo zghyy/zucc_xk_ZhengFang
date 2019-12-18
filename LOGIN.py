@@ -16,6 +16,7 @@ class ZUCC:
     CheckCodeURL = "http://xk.zucc.edu.cn/CheckCode.aspx?"
     CheckCodeHeader = ""
     PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
+    xsmain="http://xk.zucc.edu.cn/xs_main.aspx"
 
 
 # 登录账号POST

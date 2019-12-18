@@ -5,12 +5,13 @@ import CATCH_PUBLIC_COURSE as pub
 import CATCH_PLANNED_COURSE as plan
 import CATCH_OUTPLANNED_COURSE as outplan
 import LOGIN
+import time
 
 
 def begin_catch_course():
     catch_course_dic = {
         "1": "计划内选课",
-        "2": "跨专业选课(无效,还在开发)",
+        "2": "跨专业选课",
         "3": "公选课",
         "0": "返回主菜单"
     }
@@ -24,10 +25,10 @@ def begin_catch_course():
             # planned_course_spider.attack()
             catch_course_menu.print_list()
         elif _key == "2":
-            print("此功能暂时无效")
-            return
-            # outplanned = outplan.OutPlannedCourse(account)
-            # outplanned.run()
+            print("测试阶段")
+            # return
+            outplanned = outplan.OutPlannedCourse(account)
+            outplanned.run()
         elif _key == "3":
             public = pub.PublicCourse(account)
             public.run()
@@ -39,9 +40,11 @@ def begin_catch_course():
 
 
 if __name__ == "__main__":
-    print("\033[1;36m 欢迎来到正方教务系统抢课助手\033[0m\n 本程序主要自动登录+爬取课程信息+发送选课数据包进行抢课"
-          "\n\033[1;31m 第一次运行时记得先设置账号密码,之后运行就不需要设置了(存放在account.json中哦~)\033[0m"
-          "\n\033[1;31m 计划内选课第一次运行要先更新！！\033[0m")
+    print("\033[1;36m       欢迎来到正方教务系统抢课助手\033[0m\n本程序主要自动登录+爬取课程信息+发送选课数据包进行抢课"
+          "\n\033[1;31m第一次运行时记得先设置账号密码,之后运行就不需要设置了(存放在account.json中哦~)\033[0m"
+          "\n\033[1;31m计划内选课第一次运行要先更新！！\033[0m")
+    print("请花三秒钟看完上面的提示")
+    time.sleep(3)
     init_dic = {
         "1": "设置账号密码",
         "2": "开始抢课",
