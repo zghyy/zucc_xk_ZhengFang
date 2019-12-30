@@ -94,6 +94,7 @@ class Account:
             else:
                 try_time += 1
         print("#Check account password and restart!")
+        sys.exit()
 
 
 if __name__ == "__main__":
