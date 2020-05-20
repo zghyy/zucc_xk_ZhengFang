@@ -6,8 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
 
-
-# 登录基本信息
+# zucc正方教务系统需要用到的一些网站连接以及初始化的抢课数据包
 class ZUCC:
     DOMAIN = "xk.zucc.edu.cn"
     MainURL = "http://xk.zucc.edu.cn/default2.aspx"
@@ -18,10 +17,7 @@ class ZUCC:
     PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
     xsmain="http://xk.zucc.edu.cn/xs_main.aspx"
 
-
-# 登录账号POST
-
-
+# Account为登录用的账户
 class Account:
     def __init__(self, name=None, password=None):
         self.session = requests.Session()
@@ -47,7 +43,6 @@ class Account:
             with open(os.getcwd() + "/code.gif", "wb") as code_gif:
                 img_dir = os.getcwd() + "/"
                 code_gif.write(image)
-
             code_gif.close()
         except IOError:
             print("IO ERROR!")
@@ -95,8 +90,3 @@ class Account:
                 try_time += 1
         print("#Check account password and restart!")
         sys.exit()
-
-
-if __name__ == "__main__":
-    me = Account()
-    me.login()

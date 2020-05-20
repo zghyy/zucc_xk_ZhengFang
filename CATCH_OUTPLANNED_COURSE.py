@@ -63,7 +63,6 @@ class OutPlannedCourse:
                 print(str(n) + "\t" + item.text)
                 tmp_class.append(OutPlannedCourseInfo(n, item.get('value'), "ghy", item.text))
                 n = n + 1
-
             except BaseException:
                 pass
         print("请在输入正确的专业编号")
