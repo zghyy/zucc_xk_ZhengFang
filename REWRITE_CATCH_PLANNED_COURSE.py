@@ -1,6 +1,10 @@
 import LOGIN
 from bs4 import BeautifulSoup
+<<<<<<< HEAD
 import time
+=======
+
+>>>>>>> master
 
 class RE_PlannedCourse:
     def __init__(self, account):
@@ -9,10 +13,13 @@ class RE_PlannedCourse:
         self.obj_url = ""
         # 所有课程种类的url
         self.urls = []
+<<<<<<< HEAD
         # 所有开课信息
         self.course_list = []
         # 发送选课数据包的时候要用到
         self.obj_viewstate = ""
+=======
+>>>>>>> master
 
     def enter_planned_course(self):
         url = LOGIN.ZUCC.PlanCourageURL + "?xh=" + self.account.account_data["username"]
@@ -25,6 +32,7 @@ class RE_PlannedCourse:
         return response
 
     def catch_course(self):
+<<<<<<< HEAD
         for info in self.course_list:
             info.show_course_info()
         n = input("输入编号(0退出)：")
@@ -49,6 +57,10 @@ class RE_PlannedCourse:
             print(reply + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))))
             if reply == "选课成功！":
                 return
+=======
+        return
+
+>>>>>>> master
 
     def choose_course_class(self, response):
         self.account.soup = BeautifulSoup(response.text, "lxml")
@@ -67,6 +79,7 @@ class RE_PlannedCourse:
         header = LOGIN.ZUCC.InitHeader
         header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
         item_response = self.account.session.get(url=url, headers=header)
+<<<<<<< HEAD
         # print(BeautifulSoup(item_response.text, 'lxml'))
         item_soup = BeautifulSoup(item_response.text, "lxml")
         self.obj_viewstate = item_soup.find_all(name='input', id="__VIEWSTATE")[0]["value"]
@@ -81,6 +94,9 @@ class RE_PlannedCourse:
                 self.course_list.append(lessen)
             except BaseException:
                 return
+=======
+        print(BeautifulSoup(item_response.text, 'lxml'))
+>>>>>>> master
         return
 
     def run(self):
@@ -92,6 +108,7 @@ class RE_PlannedCourse:
         self.catch_course()
 
 
+<<<<<<< HEAD
 class PlannedCourseInfo:
     def __init__(self, num, code, teacher, time):
         self.num = str(num)
@@ -112,6 +129,8 @@ class PlannedCourseInfo:
             return False
 
 
+=======
+>>>>>>> master
 if __name__ == '__main__':
     account = LOGIN.Account()
     account.login()
