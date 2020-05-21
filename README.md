@@ -9,7 +9,6 @@
 ### 环境需求
 1. python环境 ：Python3.5+
 2. 程序依赖 :  requests  bs4 PIL  lxml
-3. 当前windows、ubuntu、mac测试可用
 
 ### 使用步骤
 1. git clone源码

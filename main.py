@@ -26,9 +26,9 @@ def begin_catch_course():
             catch_course_menu.print_list()
         elif _key == "2":
             print("测试阶段")
-            # return
             outplanned = outplan.OutPlannedCourse(account)
             outplanned.run()
+            catch_course_menu.print_list()
         elif _key == "3":
             public = pub.PublicCourse(account)
             public.run()
