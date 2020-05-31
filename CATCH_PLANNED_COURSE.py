@@ -2,6 +2,7 @@ import LOGIN
 from bs4 import BeautifulSoup
 import time
 
+
 class PlannedCourse:
     def __init__(self, account):
         self.account = account
@@ -38,10 +39,12 @@ class PlannedCourse:
         post_data = {"__EVENTTARGET": "Button1",
                      "__VIEWSTATEGENERATOR": "55DF6E88",
                      "xkkh": self.course_list[int(n) - 1].code,
-                     "__VIEWSTATE": self.obj_viewstate}
+                     "__VIEWSTATE": self.obj_viewstate,
+                     "RadioButtonList1": 1}
         while True:
             response = self.account.session.post(url=self.obj_url, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
+            print(soup)
             try:
                 reply = soup.find('script').string.split("'")[1]
             except BaseException:
@@ -115,5 +118,5 @@ class PlannedCourseInfo:
 if __name__ == '__main__':
     account = LOGIN.Account()
     account.login()
-    planned = RE_PlannedCourse(account)
+    planned = PlannedCourse(account)
     planned.run()
