@@ -44,7 +44,6 @@ class PlannedCourse:
         while True:
             response = self.account.session.post(url=self.obj_url, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
-            print(soup)
             try:
                 reply = soup.find('script').string.split("'")[1]
             except BaseException:
