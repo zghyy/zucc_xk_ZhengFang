@@ -53,7 +53,8 @@ class EnglishCourse:
         post_data = {"__EVENTTARGET": "Button1",
                      "__VIEWSTATEGENERATOR": "55DF6E88",
                      "xkkh": self.course_list[int(n) - 1].code,
-                     "__VIEWSTATE": self.obj_viewstate}
+                     "__VIEWSTATE": self.obj_viewstate,
+                     "RadioButtonList1": 1}
         while True:
             response = self.account.session.post(url=self.obj_url, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
