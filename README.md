@@ -8,7 +8,7 @@
 
 ### 环境需求
 1. python环境 ：Python3.5+
-2. 程序依赖 :  requests  bs4 PIL  lxml
+2. 程序依赖 :  requests  bs4 pillow  lxml
 
 ### 使用步骤
 1. git clone源码
