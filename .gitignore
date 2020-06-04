@@ -134,7 +134,8 @@ dmypy.json
 #CheckCode
 code.gif
 
+#custom
 account.json
 main.spec
-
 Pipfile*
+release/
