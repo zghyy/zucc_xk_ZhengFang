@@ -30,7 +30,6 @@ def begin_catch_course():
             english.run()
             catch_course_menu.print_list()
         elif _key == "3":
-            print("测试阶段")
             outplanned = outplan.OutPlannedCourse(account)
             outplanned.run()
             catch_course_menu.print_list()

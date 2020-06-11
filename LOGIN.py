@@ -12,10 +12,11 @@ class ZUCC:
     MainURL = "http://xk.zucc.edu.cn/default2.aspx"
     InitHeader = {"Host": "xk.zucc.edu.cn", "Connection": "keep-alive",
                   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"}
-    CheckCodeURL = "http://xk.zucc.edu.cn/CheckCode.aspx?"
+    CheckCodeURL = "http://xk.zucc.edu.cn"
     CheckCodeHeader = ""
     PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
     xsmain="http://xk.zucc.edu.cn/xs_main.aspx"
+    GetCodeKeyURL = "http://xk.zucc.edu.cn/ajaxRequest/Handler1.ashx"
 
 # Account为登录用的账户
 class Account:
@@ -37,7 +38,10 @@ class Account:
 
     def __refresh_code(self):
         # 获取验证码
-        image_response = self.session.get(ZUCC.CheckCodeURL, stream=True)
+        postdata = {"FunMode": "GETYZM"}
+        res = self.session.post(url=ZUCC.GetCodeKeyURL, data=postdata, headers=ZUCC.InitHeader)
+        image_response = self.session.get(ZUCC.CheckCodeURL+res.text, stream=True)
+
         image = image_response.content
         try:
             with open(os.getcwd() + "/code.gif", "wb") as code_gif:
@@ -90,3 +94,8 @@ class Account:
                 try_time += 1
         print("#Check account password and restart!")
         sys.exit()
+
+
+if __name__ == '__main__':
+    account =Account()
+    account.login()

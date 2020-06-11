@@ -132,9 +132,9 @@ class OutPlannedCourse:
             response = self.account.session.post(url=self.obj_url, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
             try:
-                reply = soup.find(name="script").text.split("'")[1]
+                reply = soup.find('script').string.split("'")[1]
             except BaseException:
-                reply = "未知错误"
+                reply = "未知错误或者已选上课程"
             print(reply + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))))
             if reply == "选课成功！":
                 return
