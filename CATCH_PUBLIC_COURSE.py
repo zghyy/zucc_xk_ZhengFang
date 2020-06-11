@@ -101,7 +101,7 @@ class PublicCourse:
                 return
             else:
                 try:
-                    reason = "错误原因：" + BeautifulSoup(response.text, 'lxml').find('script').text.split('\'')[1]
+                    reason = "错误原因：" + BeautifulSoup(response.text, 'lxml').find('script').string.split("'")[1]
                 except BaseException:
                     reason = "错误原因：未知或已抢课成功"
                 print(reason + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))))

@@ -139,3 +139,4 @@ account.json
 main.spec
 Pipfile*
 release/
+test.*
