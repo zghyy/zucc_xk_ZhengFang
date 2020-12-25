@@ -114,4 +114,4 @@ def run(image_path, dir_now):
 
 
 if __name__ == "__main__":
-    print(run())
+    print(run(os.getcwd() + "/",os.getcwd() + "/"))

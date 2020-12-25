@@ -15,8 +15,9 @@ class ZUCC:
     CheckCodeURL = "http://xk.zucc.edu.cn"
     CheckCodeHeader = ""
     PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
-    xsmain="http://xk.zucc.edu.cn/xs_main.aspx"
+    xsmain = "http://xk.zucc.edu.cn/xs_main.aspx?xh="
     GetCodeKeyURL = "http://xk.zucc.edu.cn/ajaxRequest/Handler1.ashx"
+
 
 # Account为登录用的账户
 class Account:
@@ -25,8 +26,8 @@ class Account:
         self.soup = None
         self.POSTDate = {'__LASTFOCUS': "", '__VIEWSTATE': "随机码", '__VIEWSTATEGENERATOR': "9BD98A7D",
                          '__EVENTTARGET': "", '__EVENTARGUMENT': "", 'txtUserName': "", 'TextBox2': "",
-                         'txtSecretCode': "-1", 'RadioButtonList1': "%E5%AD%A6%E7%94%9F",
-                         'Button1': "%E7%99%BB%E5%BD%95"}
+                         'txtSecretCode': "-1", 'RadioButtonList1': "学生",
+                         'Button1': "登录"}
         self.account_data = RW_ACCOUNT.read_account()
         if name == None and password == None:
             self.POSTDate["txtUserName"] = self.account_data["username"]
@@ -38,9 +39,15 @@ class Account:
 
     def __refresh_code(self):
         # 获取验证码
-        postdata = {"FunMode": "GETYZM"}
-        res = self.session.post(url=ZUCC.GetCodeKeyURL, data=postdata, headers=ZUCC.InitHeader)
-        image_response = self.session.get(ZUCC.CheckCodeURL+res.text, stream=True)
+        # self.POSTDate["button2"] = "刷新验证码"
+        # res = self.session.post(url=ZUCC.CheckCodeURL, data=self.POSTDate, headers=ZUCC.InitHeader)
+        # imgsoup = BeautifulSoup(res.text, 'lxml')
+        imgs = self.soup.find_all("img")
+        useimg = ""
+        for img in imgs:
+            if img.get("id") == "icode":
+                useimg = img.get("src")
+        image_response = self.session.get(ZUCC.CheckCodeURL + useimg, stream=True)
 
         image = image_response.content
         try:
@@ -63,6 +70,7 @@ class Account:
         img_dir = self.__refresh_code()
         print("###Identify checkCode")
         self.POSTDate['txtSecretCode'] = OCR_CODE.run(img_dir, dir_now=img_dir)
+        # print(self.POSTDate['txtSecretCode'])
 
     # 登录进入主页
     def login(self):
@@ -73,15 +81,16 @@ class Account:
             if init_response.ok:
                 print("##GET login page succeed!")
                 break
-        login_soup = BeautifulSoup(init_response.text, "lxml")
-        self.POSTDate["__VIEWSTATE"] = login_soup.find('input', attrs={'name': '__VIEWSTATE'})["value"]
+        self.soup = BeautifulSoup(init_response.text, "lxml")
+        self.POSTDate["__VIEWSTATE"] = self.soup.find('input', attrs={'name': '__VIEWSTATE'})["value"]
         # print("###GET StateCode:", self.POSTDate["__VIEWSTATE"])  # 随机码
         # print("###GET checkCode")
         self.__get_check_code_ocr()
         print("##POST login")
         try_time = 0
+        login_response = self.session.post(ZUCC.MainURL, data=self.POSTDate,headers=ZUCC.InitHeader)
         while try_time < 300:
-            login_response = self.session.post(ZUCC.MainURL, data=self.POSTDate)
+            login_response = self.session.get(ZUCC.xsmain + self.account_data["username"], headers=ZUCC.InitHeader)
             # 进入主页
             self.soup = BeautifulSoup(login_response.text, "lxml")
             if login_response.ok and self.soup.find("title").text == "正方教务管理系统":
@@ -97,5 +106,5 @@ class Account:
 
 
 if __name__ == '__main__':
-    account =Account()
+    account = Account()
     account.login()
