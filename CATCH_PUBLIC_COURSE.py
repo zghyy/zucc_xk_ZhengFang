@@ -96,7 +96,7 @@ class PublicCourse:
             print("当前正在抢 " + self.course_list[int(number) - 2].name)
             response = self.account.session.post(url=url, data=POSTData)
             if self.num_of_selected_courses(response) == (self.num_of_selected + 1):
-                print("抢课成功！" + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))))
+                print("抢课成功！" + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))),flush=True)
                 self.num_of_selected += 1
                 return
             else:
@@ -104,7 +104,7 @@ class PublicCourse:
                     reason = "错误原因：" + BeautifulSoup(response.text, 'lxml').find('script').string.split("'")[1]
                 except BaseException:
                     reason = "错误原因：未知或已抢课成功"
-                print(reason + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))))
+                print(reason + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))),flush=True)
 
     def num_of_selected_courses(self, response):
         soup = BeautifulSoup(response.text, "lxml")
