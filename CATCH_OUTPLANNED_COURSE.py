@@ -135,7 +135,7 @@ class OutPlannedCourse:
                 reply = soup.find(name="script").text.split("'")[1]
             except BaseException:
                 reply = "未知错误"
-            print(reply + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))))
+            print(reply + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))),flush=True)
             if reply == "选课成功！":
                 return
 
