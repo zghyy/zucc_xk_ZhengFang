@@ -8,7 +8,7 @@
 
 ### 环境需求
 1. python环境 ：Python3.5+
-2. 程序依赖 :  requests  bs4  pillow  lxml
+2. 程序依赖 :  requests  bs4  pillow  lxml rsa
 
 ### 使用步骤
 

@@ -1,10 +1,12 @@
 # -*- coding: UTF-8 -*-
+import binascii
 import os
 import sys
 import OCR_CODE
 from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
+import rsa
 
 # zucc正方教务系统需要用到的一些网站连接以及初始化的抢课数据包
 class ZUCC:
@@ -27,7 +29,7 @@ class Account:
         self.POSTDate = {'__LASTFOCUS': "", '__VIEWSTATE': "随机码", '__VIEWSTATEGENERATOR': "9BD98A7D",
                          '__EVENTTARGET': "", '__EVENTARGUMENT': "", 'txtUserName': "", 'TextBox2': "",
                          'txtSecretCode': "-1", 'RadioButtonList1': "学生",
-                         'Button1': "登录"}
+                         'Button1': "登录",'txtKeyExponent': "010001",'txtKeyModulus': "随机码"}
         self.account_data = RW_ACCOUNT.read_account()
         if name == None and password == None:
             self.POSTDate["txtUserName"] = self.account_data["username"]
@@ -83,8 +85,21 @@ class Account:
                 break
         self.soup = BeautifulSoup(init_response.text, "lxml")
         self.POSTDate["__VIEWSTATE"] = self.soup.find('input', attrs={'name': '__VIEWSTATE'})["value"]
+        self.POSTDate["txtKeyModulus"] = self.soup.find('input', attrs={'name': 'txtKeyModulus'})["value"]
         # print("###GET StateCode:", self.POSTDate["__VIEWSTATE"])  # 随机码
+        # print("###GET txtKeyModulus:", self.POSTDate["txtKeyModulus"])  # KeyModulus
         # print("###GET checkCode")
+        message = self.POSTDate["TextBox2"]
+        # print("message":message)
+        exponent = int(self.POSTDate["txtKeyExponent"],16)
+        modulus = int(self.POSTDate["txtKeyModulus"],16)
+        rsa_pubkey = rsa.PublicKey(modulus, exponent)
+        # print("rsa_pubkey:"rsa_pubkey)
+        passwd = rsa.encrypt(message.encode('utf-8'), rsa_pubkey)
+        # print("passwd:"passwd)
+        passwd = binascii.b2a_hex(passwd).decode('ascii')
+        self.POSTDate["TextBox2"] = passwd
+
         self.__get_check_code_ocr()
         print("##POST login")
         try_time = 0
@@ -104,6 +119,41 @@ class Account:
         print("#Check account password and restart!")
         sys.exit()
 
+
+class Encrypt(object):
+    def __init__(self, e, m):
+        self.e = e
+        self.m = m
+
+    def encrypt(self, message):
+        mm = int(self.m, 16)
+        ee = int(self.e, 16)
+        rsa_pubkey = rsa.PublicKey(mm, ee)
+        crypto = self._encrypt(message.encode(), rsa_pubkey)
+        return crypto.hex()
+
+    def _pad_for_encryption(self, message, target_length):
+        message = message[::-1]
+        max_msglength = target_length - 11
+        msglength = len(message)
+
+        padding = b''
+        padding_length = target_length - msglength - 3
+
+        for i in range(padding_length):
+            padding += b'\x00'
+
+        return b''.join([b'\x00\x00', padding, b'\x00', message])
+
+    def _encrypt(self, message, pub_key):
+        keylength = rsa.common.byte_size(pub_key.n)
+        padded = self._pad_for_encryption(message, keylength)
+
+        payload = rsa.transform.bytes2int(padded)
+        encrypted = rsa.core.encrypt_int(payload, pub_key.e, pub_key.n)
+        block = rsa.transform.int2bytes(encrypted, keylength)
+
+        return block
 
 if __name__ == '__main__':
     account = Account()
